@@ -67,14 +67,15 @@ A lightweight Flask API is created to:
 - Predict using XGBoost  
 - Return the result in real-time  
 
+
 #### Example Dockerfile snippet:
-```dockerfile
+dockerfile
 FROM python:3.10-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"] ```
 
 Build and Push Docker Image
 
@@ -82,9 +83,7 @@ docker build -t your-docker-username/ml-term-deposit-app .
 docker push your-docker-username/ml-term-deposit-app
 
 
-⸻
-
-3. Kubernetes Deployment
+### 3. Kubernetes Deployment:
 
 Sample deployment.yaml
 
@@ -126,15 +125,16 @@ spec:
 
 ⸻
 
-4. Argo CD Integration
+### 4.Argo CD:
 
 We use Argo CD for GitOps-style Continuous Deployment:
-	•	Argo CD monitors the GitHub repo for changes to Kubernetes YAML files.
-	•	On every commit to the main branch (e.g., image tag update), it syncs and redeploys the app automatically.
-	•	This ensures CI/CD without manual intervention.
+    •   Argo CD monitors the GitHub repo for changes to Kubernetes YAML files.
+    •   On every commit to the main branch (e.g., image tag update), it syncs and redeploys the app automatically.
+    •   This ensures CI/CD without manual intervention.
 
 ⸻
 
 This setup makes the model production-ready, scalable, and maintainable with modern DevOps and MLOps practices.
 
 You can copy and paste this directly into your `README.md`. Let me know if you’d like to include badges, repo structure, or instructions to run locally!
+
