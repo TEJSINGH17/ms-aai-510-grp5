@@ -74,7 +74,7 @@ docker build -t your-docker-username/ml-term-deposit-app .
 docker push your-docker-username/ml-term-deposit-app
 
 ### 2. **Kubernetes Deployment**
-Sample deployment.yaml
+- Sample deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
