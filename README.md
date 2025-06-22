@@ -43,6 +43,15 @@ This project uses machine learning to predict whether a bank customer will subsc
 
 This project is deployed using containerized and GitOps principles:
 
+All dependencies are listed in requirements.txt. Example
+flask
+pandas
+numpy
+scikit-learn
+xgboost
+joblib
+gunicorn
+
 ### 1. **Containerization**
 - All model files (`XGBoost`, `KMeans`, `Scaler`) are saved and bundled in a **Docker container**.
 - A lightweight **Flask API** is created to:
@@ -55,6 +64,51 @@ This project is deployed using containerized and GitOps principles:
 # Example Dockerfile snippet
 FROM python:3.10-slim
 WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-RUN pip install -r requirements.txt
-CMD ["python", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+
+Build and Push Docker Image
+docker build -t your-docker-username/ml-term-deposit-app .
+docker push your-docker-username/ml-term-deposit-app
+
+### 2. **Kubernetes Deployment**
+Sample deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-deposit-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ml-deposit
+  template:
+    metadata:
+      labels:
+        app: ml-deposit
+    spec:
+      containers:
+      - name: ml-container
+        image: your-docker-username/ml-term-deposit-app
+        ports:
+        - containerPort: 5000
+Sample service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-deposit-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: ml-deposit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+### 3. ** Argo CD Integration**
+We use Argo CD for GitOps-style Continuous Deployment:
+	•	Argo CD monitors the GitHub repo for changes to Kubernetes YAML files.
+	•	On every commit to the main branch (e.g., image tag update), it syncs and redeploys the app automatically.
+	•	This ensures CI/CD without manual intervention.
